@@ -469,6 +469,8 @@ inline void getDepthColor(DepthColoring depthColoring, const unsigned short & de
         }
 #endif
             break;
+        default:
+            break;
     }
 }
 
@@ -509,12 +511,12 @@ static inline XnPoint3D toXn(const ofPoint & p){
 //--------------------------------------------------------------
 static inline ofPoint g_worldToProjective(const ofPoint& p){
     // this assumes a 640 x 480 resolution as per above defines
-    
+
     // X_res / x_to_z * X_RW / z + X_res/2
     // aProjective[i].X = (XnFloat)fCoeffX * aRealWorld[i].X / aRealWorld[i].Z + nHalfXres;
     // aProjective[i].Y = nHalfYres - (XnFloat)fCoeffY * aRealWorld[i].Y / aRealWorld[i].Z;
     // aProjective[i].Z = aRealWorld[i].Z;
-    
+
     ofPoint projective;
 	projective.x = COEFX * p.x / p.z + HALFWIDTH;
     projective.y = HALFHEIGHT - COEFY * p.y / p.z;
@@ -530,7 +532,7 @@ static inline ofPoint g_worldToProjective(const XnVector3D& p){
 //--------------------------------------------------------------
 static inline ofPoint g_projectiveToWorld(const ofPoint& p){
     // this assumes a 640 x 480 resolution as per above defines
-    
+
     // X_RW = (X_proj / X_res - 1/2) * Z * x_to_z
     // XnDouble fNormalizedX = (aProjective[i].X / outputMode.nXRes - 0.5);
     // aRealWorld[i].X = (XnFloat)(fNormalizedX * aProjective[i].Z * fXToZ);

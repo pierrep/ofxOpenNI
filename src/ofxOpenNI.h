@@ -108,9 +108,9 @@ public:
 
 	float getWidth();
 	float getHeight();
-    
+
     float getFrameRate();
-    
+
     void setLogLevel(XnLogSeverity logLevel);
     void setLogLevel(ofLogLevel logLevel);
 
@@ -143,7 +143,7 @@ public:
     bool getUseBackgroundDepthSubtraction();
 	void setCaptureBackgroundDepthPixels(bool b);
     bool getCaptureBackgroundDepthPixels();
-    
+
     void setUseDepthRawPixels(bool b);
     bool getUseDepthRawPixels();
 
@@ -349,9 +349,9 @@ private:
     void updateUserPixels(ofxOpenNIUser & user);
 	void updatePointClouds(ofxOpenNIUser & user);
 	void updateRecorder();
-    
+
     void updateDepthThresholds(const unsigned short& depth, ofColor& depthColor, int nX, int nY);
-    
+
 	bool g_bIsDepthOn;
 	bool g_bIsImageOn;
 	bool g_bIsInfraOn;
@@ -411,7 +411,7 @@ private:
 	ofShortPixels backgroundPixels;
 
     const XnDepthPixel* backgroundDepthPixels;
-    
+
 	// image
 	ofTexture imageTexture;
 	ofPixels imagePixels[2];
@@ -459,6 +459,8 @@ private:
     // user callback handlers
     static void XN_CALLBACK_TYPE UserCB_handleNewUser(xn::UserGenerator& userGenerator, XnUserID nID, void* pCookie);
     static void XN_CALLBACK_TYPE UserCB_handleLostUser(xn::UserGenerator& userGenerator, XnUserID nID, void* pCookie);
+    static void XN_CALLBACK_TYPE UserCB_handleUserExit(xn::UserGenerator& UserGenerator, XnUserID nID, void* pCookie);
+    static void XN_CALLBACK_TYPE UserCB_handleUserReEnter(xn::UserGenerator& UserGenerator, XnUserID nID, void* pCookie);
     static void XN_CALLBACK_TYPE UserCB_handlePoseDetected(xn::PoseDetectionCapability& poseDetectionCapability, const XnChar* strPose, XnUserID nID, void* pCookie);
     static void XN_CALLBACK_TYPE UserCB_handleCalibrationStart(xn::SkeletonCapability& skeletonCapability, XnUserID nID, void* pCookie);
 //    static void XN_CALLBACK_TYPE UserCB_handleCalibrationProgress(xn::SkeletonCapability& skeletonCapability, XnUserID nID, XnCalibrationStatus calibrationStatus, void* pCookie);
@@ -467,6 +469,7 @@ private:
     // user tracking functions
     XnChar	userCalibrationPose[20];
     void stopTrackingUser(XnUserID nID);
+    void resetTrackingUser(XnUserID nID);
     void startTrackingUser(XnUserID nID);
     void requestCalibration(XnUserID nID);
     void startPoseDetection(XnUserID nID);
@@ -520,25 +523,11 @@ private:
 
     // frame rate storage
     double prevMillis, lastFrameTime, timeNow, timeThen, tFps, frameRate;
-    
-    Poco::Mutex mutex;
-    
+
     // block copy ctor and assignment operator
     ofxOpenNI(const ofxOpenNI& other);
     ofxOpenNI& operator=(const ofxOpenNI&);
 
-};
-
-class ofxOpenNIScopedLock {
-public:
-    ofxOpenNIScopedLock(bool _bIsThreaded, Poco::Mutex & _mutex):bIsThreaded(_bIsThreaded), mutex(_mutex){
-        if(bIsThreaded) mutex.lock();
-    };
-    ~ofxOpenNIScopedLock(){
-        if(bIsThreaded) mutex.unlock();
-    };
-    bool bIsThreaded;
-    Poco::Mutex & mutex;
 };
 
 #endif
